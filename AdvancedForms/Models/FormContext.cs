@@ -4,9 +4,9 @@ namespace AdvancedForms.Models;
 
 public class FormContext : DbContext
 {
-	public DbSet<Form> Forms { get; set; }
-	public DbSet<Preset> Presets { get; set; }
-	public DbSet<Response> Responses { get; set; }
+	public DbSet<Form> Forms => Set<Form>();
+	public DbSet<Preset> Presets => Set<Preset>();
+	public DbSet<Response> Responses => Set<Response>();
 
 	public string DbPath { get; }
 
