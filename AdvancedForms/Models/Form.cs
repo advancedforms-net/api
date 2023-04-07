@@ -7,7 +7,7 @@ public class Form
 	public string Description { get; set; } = string.Empty;
 	public bool UseCodes { get; set; }
 
-	public List<Preset> Presets { get; } = new();
+	public virtual List<Preset> Presets { get; set; } = new();
 
-	public List<Response> Responses { get; } = new();
+	public virtual List<Response> Responses { get; set; } = new();
 }

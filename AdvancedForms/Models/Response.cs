@@ -10,8 +10,8 @@ public class Response
 	public DateTime Creation { get; set; }
 
 	public Guid PresetId { get; set; }
-	public Preset? Preset { get; set; }
-	public List<ResponseValue> Values { get; } = new();
+	public virtual Preset? Preset { get; set; }
+	public virtual List<ResponseValue> Values { get; set; } = new();
 }
 
 /// <summary>
@@ -25,5 +25,5 @@ public class ResponseValue
 	public string Value { get; set; } = string.Empty;
 
 	public Guid ResponseId { get; set; }
-	public Response? Response { get; set; }
+	public virtual Response? Response { get; set; }
 }

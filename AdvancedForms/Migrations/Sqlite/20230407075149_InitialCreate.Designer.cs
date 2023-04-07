@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AdvancedForms.Migrations.SqliteMigrations
+namespace AdvancedForms.Migrations.Sqlite
 {
-    [DbContext(typeof(FormContext))]
-    [Migration("20230406152721_InitialCreate")]
+    [DbContext(typeof(SqliteFormContext))]
+    [Migration("20230407075149_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

@@ -8,22 +8,43 @@ public class FormContext : DbContext
 	public DbSet<Preset> Presets => Set<Preset>();
 	public DbSet<Response> Responses => Set<Response>();
 
-	public string DbPath { get; }
-
-	public FormContext()
+	public FormContext() { }
+	public FormContext(DbContextOptions<FormContext> options)
+		: base(options)
 	{
-		var folder = Environment.SpecialFolder.LocalApplicationData;
-		var path = Environment.GetFolderPath(folder);
-		DbPath = System.IO.Path.Join(path, "forms.db");
+	}
+	protected FormContext(DbContextOptions options) : base(options)
+	{
 	}
 
-	// The following configures EF to create a Sqlite database file in the
-	// special "local" folder for your platform.
-	protected override void OnConfiguring(DbContextOptionsBuilder options)
-		=> options.UseSqlite($"Data Source={DbPath}");
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseLazyLoadingProxies();
 }
-/*public class NpgsqlFormContext : FormContext
+
+public class SqliteFormContext : FormContext
 {
+	public SqliteFormContext() { }
+	public SqliteFormContext(DbContextOptions<SqliteFormContext> options) : base(options)
+	{
+	}
+
+#if EF_MIGRATION
 	protected override void OnConfiguring(DbContextOptionsBuilder options)
-		=> options.UseNpgsql("DataSource=");
-}*/
+	{
+		options.UseSqlite("DataSource=");
+	}
+#endif
+}
+
+public class NpgsqlFormContext : FormContext
+{
+	public NpgsqlFormContext() { }
+	public NpgsqlFormContext(DbContextOptions<NpgsqlFormContext> options) : base(options)
+	{
+	}
+
+#if EF_MIGRATION
+	protected override void OnConfiguring(DbContextOptionsBuilder options) {
+		options.UseNpgsql("DataSource=");
+	}
+#endif
+}

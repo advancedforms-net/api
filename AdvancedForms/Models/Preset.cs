@@ -9,13 +9,13 @@ public class Preset
 	public string? Code { get; set; }
 
 	public Guid FormId { get; set; }
-	public Form? Form { get; set; }
+	public virtual Form? Form { get; set; }
 
 	public Guid? TemplateId { get; set; }
-	public PresetTemplate? Template { get; set; }
+	public virtual PresetTemplate? Template { get; set; }
 
-	public List<PresetValue> Values { get; } = new();
-	public List<Response> Responses { get; } = new();
+	public virtual List<PresetValue> Values { get; set; } = new();
+	public virtual List<Response> Responses { get; set; } = new();
 }
 
 /// <summary>
@@ -26,7 +26,7 @@ public class PresetTemplate
 	public Guid Id { get; set; }
 	public string Description { get; set; } = string.Empty;
 
-	public List<PresetTemplateValue> Values { get; } = new();
+	public virtual List<PresetTemplateValue> Values { get; set; } = new();
 }
 
 /// <summary>
@@ -41,7 +41,7 @@ public class PresetTemplateValue
 	public string Value { get; set; } = string.Empty;
 
 	public Guid TemplateId { get; set; }
-	public PresetTemplate? Template { get; set; }
+	public virtual PresetTemplate? Template { get; set; }
 }
 
 /// <summary>
@@ -56,6 +56,6 @@ public class PresetValue
 	public string Value { get; set; } = string.Empty;
 
 	public Guid PresetId { get; set; }
-	public Preset? Preset { get; set; }
+	public virtual Preset? Preset { get; set; }
 }
 

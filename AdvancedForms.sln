@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedForms", "AdvancedForms\AdvancedForms.csproj", "{29037DFF-F00C-474D-A155-1B46637ED517}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedForms", "AdvancedForms\AdvancedForms.csproj", "{29037DFF-F00C-474D-A155-1B46637ED517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedForms.Tests", "AdvancedForms.Tests\AdvancedForms.Tests.csproj", "{F11BE5B1-67A9-42DD-AE16-EFCFA2B8C94F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedForms.Tests", "AdvancedForms.Tests\AdvancedForms.Tests.csproj", "{F11BE5B1-67A9-42DD-AE16-EFCFA2B8C94F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
