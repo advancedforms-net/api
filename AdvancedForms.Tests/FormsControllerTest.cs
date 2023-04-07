@@ -1,4 +1,4 @@
-﻿using AdvancedForms.Controllers;
+using AdvancedForms.Controllers;
 using AdvancedForms.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -23,7 +23,7 @@ public class FormsControllerGetDataTest
 	{
 		SeedDb();
 
-		controller = new FormsController(new NullLogger<FormsController>(), new FormContext(dbContextOptions));
+		controller = new FormsController(new NullLogger<FormsController>(), new FormContext(dbContextOptions), new NowResolver());
 	}
 
 	private void SeedDb()
