@@ -16,7 +16,7 @@ public class FormsControllerGetDataTest
 		.UseInMemoryDatabase(databaseName: "Forms")
 	.Options;
 
-	private FormsController controller = null!;
+	private FormsController controller = default!;
 
 	[OneTimeSetUp]
 	public void Setup()
@@ -47,7 +47,7 @@ public class FormsControllerGetDataTest
 				Name = "Form 1",
 				Description = "Form 1 desc",
 				UseCodes = false,
-				Presets = new() 
+				Presets = new()
 				{
 					new()
 					{
@@ -69,10 +69,10 @@ public class FormsControllerGetDataTest
 			},
 			new()
 			{
-				Id = new Guid("542a47b5-28fe-4e6a-9f20-9b8c4e9b1b92"), 
-				Name = "Form 2", 
-				Description = "Form 2 desc using codes", 
-				UseCodes = true, 
+				Id = new Guid("542a47b5-28fe-4e6a-9f20-9b8c4e9b1b92"),
+				Name = "Form 2",
+				Description = "Form 2 desc using codes",
+				UseCodes = true,
 				Presets = new()
 				{
 					new()
@@ -85,7 +85,7 @@ public class FormsControllerGetDataTest
 						},
 						Template = template,
 					},
-					new() 
+					new()
 					{
 						Id = new Guid("4b973e97-4f01-4ece-a7dc-be822965d3c3"),
 						Code = "test2",
@@ -131,7 +131,7 @@ public class FormsControllerGetDataTest
 	public async Task FormWithCodeMissing()
 	{
 		var result = await controller.GetData(new Guid("542a47b5-28fe-4e6a-9f20-9b8c4e9b1b92"), null);
-		Assert.That(result.Result, Is.TypeOf<BadRequestObjectResult>());
+		Assert.That(result.Result, Is.TypeOf<NotFoundResult>());
 	}
 
 	[Test]

@@ -10,7 +10,7 @@ public class Response
 	public DateTime Creation { get; set; }
 
 	public Guid PresetId { get; set; }
-	public virtual Preset? Preset { get; set; }
+	public virtual Preset Preset { get; set; } = default!;
 	public virtual List<ResponseValue> Values { get; set; } = new();
 }
 
@@ -25,5 +25,5 @@ public class ResponseValue
 	public string Value { get; set; } = string.Empty;
 
 	public Guid ResponseId { get; set; }
-	public virtual Response? Response { get; set; }
+	public virtual Response Response { get; set; } = default!;
 }

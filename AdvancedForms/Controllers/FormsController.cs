@@ -9,7 +9,6 @@ namespace AdvancedForms.Controllers;
 [Route("api/[controller]")]
 public class FormsController : ControllerBase
 {
-
 	private readonly ILogger<FormsController> logger;
 	private readonly FormContext db;
 	private readonly INowResolver nowResolver;
@@ -24,25 +23,7 @@ public class FormsController : ControllerBase
 	[HttpGet("Data")]
 	public async Task<ActionResult<DataRequest>> GetData(Guid formId, string? personalCode)
 	{
-		// check if the form is valid and if the form uses personal codes or not
-		var form = await db.Forms.FindAsync(formId);
-		if (form == null)
-		{
-			return NotFound();
-		}
-
-		if (form.UseCodes && string.IsNullOrEmpty(personalCode))
-		{
-			return BadRequest("Personal code is required for this form.");
-		}
-
-		if (!form.UseCodes)
-		{
-			// if the form does noet use codes then make sure the personal code is not filled in
-			personalCode = null;
-		}
-
-		var preset = await db.Presets.Where(p => p.FormId == formId && p.Code == personalCode).SingleOrDefaultAsync();
+		var preset = await GetFormPreset(formId, personalCode);
 		if (preset == null)
 		{
 			return NotFound();
@@ -57,7 +38,7 @@ public class FormsController : ControllerBase
 		}
 
 		// get already posted data (response data => personal code)
-		if (form.UseCodes)
+		if (preset.Form.UseCodes)
 		{
 			// get data from preset itself (only really relevant when using a personel code)
 			preset.Values.ForEach(v => data.StaticData[v.Key] = v.Value);
@@ -76,27 +57,12 @@ public class FormsController : ControllerBase
 	[HttpPost("Data")]
 	public async Task<ActionResult> PostData(Guid formId, string? personalCode, Dictionary<string, string> data)
 	{
-		ArgumentNullException.ThrowIfNull(data);
-
-		// check if the form is valid and if the form uses personal codes or not
-		var form = await db.Forms.FindAsync(formId);
-		if (form == null)
+		if (data == null)
 		{
-			return NotFound();
+			return BadRequest("No data supplied.");
 		}
 
-		if (form.UseCodes && string.IsNullOrEmpty(personalCode))
-		{
-			return BadRequest("Personal code is required for this form.");
-		}
-
-		if (!form.UseCodes)
-		{
-			// if the form does noet use codes then make sure the personal code is not filled in
-			personalCode = null;
-		}
-
-		var preset = await db.Presets.Where(p => p.FormId == formId && p.Code == personalCode).SingleOrDefaultAsync();
+		var preset = await GetFormPreset(formId, personalCode);
 		if (preset == null)
 		{
 			return NotFound();
@@ -112,5 +78,31 @@ public class FormsController : ControllerBase
 		await db.SaveChangesAsync();
 
 		return NoContent();
+	}
+
+	public async Task<Preset?> GetFormPreset(Guid formId, string? personalCode)
+	{
+
+		// check if the form is valid and if the form uses personal codes or not
+		var form = await db.Forms.FindAsync(formId);
+		if (form == null)
+		{
+			return null;
+		}
+
+		if (form.UseCodes && string.IsNullOrEmpty(personalCode))
+		{
+			return null;
+		}
+
+		if (!form.UseCodes)
+		{
+			// if the form does noet use codes then make sure the personal code is not filled in
+			personalCode = null;
+		}
+
+		var preset = await db.Presets.Where(p => p.FormId == formId && p.Code == personalCode).SingleOrDefaultAsync();
+
+		return preset;
 	}
 }

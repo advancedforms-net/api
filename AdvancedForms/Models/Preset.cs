@@ -9,7 +9,7 @@ public class Preset
 	public string? Code { get; set; }
 
 	public Guid FormId { get; set; }
-	public virtual Form? Form { get; set; }
+	public virtual Form Form { get; set; } = default!;
 
 	public Guid? TemplateId { get; set; }
 	public virtual PresetTemplate? Template { get; set; }
@@ -41,7 +41,7 @@ public class PresetTemplateValue
 	public string Value { get; set; } = string.Empty;
 
 	public Guid TemplateId { get; set; }
-	public virtual PresetTemplate? Template { get; set; }
+	public virtual PresetTemplate Template { get; set; } = default!;
 }
 
 /// <summary>
@@ -56,6 +56,6 @@ public class PresetValue
 	public string Value { get; set; } = string.Empty;
 
 	public Guid PresetId { get; set; }
-	public virtual Preset? Preset { get; set; }
+	public virtual Preset Preset { get; set; } = default!;
 }
 
