@@ -34,7 +34,12 @@ namespace AdvancedForms.Migrations.Sqlite
                     b.Property<bool>("UseCodes")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Forms");
                 });
@@ -174,6 +179,30 @@ namespace AdvancedForms.Migrations.Sqlite
                     b.ToTable("ResponseValue");
                 });
 
+            modelBuilder.Entity("AdvancedForms.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Mail")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("AdvancedForms.Models.Form", b =>
+                {
+                    b.HasOne("AdvancedForms.Models.User", null)
+                        .WithMany("Forms")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("AdvancedForms.Models.Preset", b =>
                 {
                     b.HasOne("AdvancedForms.Models.Form", "Form")
@@ -261,6 +290,11 @@ namespace AdvancedForms.Migrations.Sqlite
             modelBuilder.Entity("AdvancedForms.Models.Response", b =>
                 {
                     b.Navigation("Values");
+                });
+
+            modelBuilder.Entity("AdvancedForms.Models.User", b =>
+                {
+                    b.Navigation("Forms");
                 });
 #pragma warning restore 612, 618
         }

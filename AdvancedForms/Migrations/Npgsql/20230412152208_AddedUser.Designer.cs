@@ -3,6 +3,7 @@ using System;
 using AdvancedForms.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdvancedForms.Migrations.Npgsql
 {
     [DbContext(typeof(NpgsqlFormContext))]
-    partial class NpgsqlFormContextModelSnapshot : ModelSnapshot
+    [Migration("20230412152208_AddedUser")]
+    partial class AddedUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

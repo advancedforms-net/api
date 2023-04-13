@@ -4,8 +4,7 @@ namespace AdvancedForms.Models;
 
 public class DataSeeder
 {
-	public static List<Form> Forms = new List<Form>();
-	public static List<Preset> Presets = new List<Preset>();
+	public static List<User> Users = new List<User>();
 
 	public static void Init(int count)
 	{
@@ -24,15 +23,22 @@ public class DataSeeder
 
 			var presets = form.UseCodes ? presetFaker.GenerateBetween(3, 15) : presetFaker.GenerateBetween(1, 1);
 
-			DataSeeder.Presets.AddRange(presets);
-
-#pragma warning disable CS8603 // Possible null reference return.
-			return null; // Form.Presets is a getter only. The return value has no impact.
-#pragma warning restore CS8603 // Possible null reference return.
+			return presets;
 		});
 
-		var forms = formFaker.Generate(count);
+		var userFaker = new Faker<User>()
+			.RuleFor(u => u.Id, f => f.Random.Guid())
+			.RuleFor(u => u.Mail, f => f.Person.Email)
+			.RuleFor(u => u.Forms, (f, user) =>
+			{
+				formFaker.RuleFor(f => f.UserId, _ => user.Id);
 
-		DataSeeder.Forms.AddRange(forms);
+				var forms = formFaker.GenerateBetween(1, 5);
+				return forms;
+			});
+
+		var users = userFaker.Generate(count);
+
+		DataSeeder.Users.AddRange(users);
 	}
 }

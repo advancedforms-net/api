@@ -1,5 +1,6 @@
 using AdvancedForms.Controllers;
 using AdvancedForms.Models;
+using AdvancedForms.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
@@ -10,20 +11,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdvancedForms.Tests;
 
-public class FormsControllerGetDataTest
+public class DataControllerTest
 {
 	private readonly DbContextOptions<FormContext> dbContextOptions = new DbContextOptionsBuilder<FormContext>()
 		.UseInMemoryDatabase(databaseName: "Forms")
 	.Options;
 
-	private FormsController controller = default!;
+	private DataController controller = default!;
 
 	[OneTimeSetUp]
 	public void Setup()
 	{
 		SeedDb();
 
-		controller = new FormsController(new NullLogger<FormsController>(), new FormContext(dbContextOptions), new NowResolver());
+		controller = new DataController(new NullLogger<DataController>(), new FormContext(dbContextOptions), new NowResolver());
 	}
 
 	private void SeedDb()
