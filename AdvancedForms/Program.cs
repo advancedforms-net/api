@@ -48,23 +48,8 @@ var providerType = DbProviderType();
 			BearerFormat = "JWT",
 		};
 
-		var securityRequirement = new OpenApiSecurityRequirement
-		{
-			{
-				new OpenApiSecurityScheme
-				{
-					Reference = new OpenApiReference
-					{
-						Type = ReferenceType.SecurityScheme,
-						Id = "bearerAuth",
-					}
-				},
-				new string[] {}
-			}
-		};
-
-		options.AddSecurityDefinition("bearerAuth", securityScheme);
-		options.AddSecurityRequirement(securityRequirement);
+		options.OperationFilter<AddAuthHeaderOperationFilter>();
+		options.AddSecurityDefinition("bearer", securityScheme);
 	});
 }
 

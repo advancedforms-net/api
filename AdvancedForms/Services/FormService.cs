@@ -7,16 +7,17 @@ namespace AdvancedForms.Services;
 public interface IFormService
 {
 	Task<IEnumerable<Form>> GetAll();
-	Task<Form> Get(Guid id);
-	Task Create(FormCreate model);
-	Task Update(Guid id, FormUpdate model);
-	Task Delete(Guid id);
+	Task<Form> Get(Guid formId);
+	Task Create(FormCreate model, Guid userId);
+	Task Update(Guid formId, FormUpdate model);
+	Task Delete(Guid formId);
 }
 
 public class FormService : IFormService
 {
 	private readonly ILogger<FormService> logger;
 	private readonly FormContext db;
+	private readonly Mapper mapper = new();
 
 	public FormService(ILogger<FormService> logger, FormContext db)
 	{
@@ -28,9 +29,9 @@ public class FormService : IFormService
 		return Task.FromResult<IEnumerable<Form>>(db.Forms);
 	}
 
-	public async Task<Form> Get(Guid id)
+	public async Task<Form> Get(Guid formId)
 	{
-		var form = await db.Forms.FindAsync(id);
+		var form = await db.Forms.FindAsync(formId);
 		if (form == null)
 		{
 			throw new KeyNotFoundException("Form not found");
@@ -39,39 +40,40 @@ public class FormService : IFormService
 		return form;
 	}
 
-	public async Task Create(FormCreate model)
+	public async Task Create(FormCreate model, Guid userId)
 	{
 		// validate
 		//if (_context.Users.Any(x => x.Email == model.Email))
 		//	throw new AppException("User with the email '" + model.Email + "' already exists");
 
-		// map model to new user object
-		var mapper = new Mapper();
+		// map model to new form object
 		var form = mapper.FormCreateToForm(model);
 
-		// save user
+		form.UserId = userId;
+
+		// save form
 		db.Forms.Add(form);
 		await db.SaveChangesAsync();
 	}
 
-	public async Task Update(Guid id, FormUpdate model)
+	public async Task Update(Guid formId, FormUpdate model)
 	{
-		var form = await Get(id);
+		var form = await Get(formId);
 
 		// validate
 		//if (model.Email != form.Email && db.Users.Any(x => x.Email == model.Email))
 		//	throw new AppException("User with the email '" + model.Email + "' already exists");
 
-		// copy model to user and save
-		var mapper = new Mapper();
+		// copy model to form and save
 		mapper.FormUpdateToForm(model, form);
+
 		db.Forms.Update(form);
 		await db.SaveChangesAsync();
 	}
 
-	public async Task Delete(Guid id)
+	public async Task Delete(Guid formId)
 	{
-		var form = await Get(id);
+		var form = await Get(formId);
 		db.Forms.Remove(form);
 		//TODO remove childs
 		await db.SaveChangesAsync();

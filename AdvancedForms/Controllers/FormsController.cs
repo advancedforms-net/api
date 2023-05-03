@@ -36,25 +36,23 @@ public class FormsController : ControllerBase
 	[HttpGet]
 	public async Task<IActionResult> GetAll()
 	{
-		var users = await formService.GetAll();
-		return Ok(users);
+		var forms = await formService.GetAll();
+		return Ok(forms);
 	}
 
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetById(Guid id)
 	{
 		await ValidateUserAccess(id);
-		var user = await formService.Get(id);
-		return Ok(user);
+		var form = await formService.Get(id);
+		return Ok(form);
 	}
 
 	[HttpPost]
 	public async Task<IActionResult> Create(FormCreate model)
 	{
-		//TODO extend form with user id
-
-		await formService.Create(model);
-		return Ok(new { message = "User created" });
+		await formService.Create(model, userId);
+		return Ok(new { message = "Form created" });
 	}
 
 	[HttpPut("{id}")]
@@ -62,7 +60,7 @@ public class FormsController : ControllerBase
 	{
 		await ValidateUserAccess(id);
 		await formService.Update(id, model);
-		return Ok(new { message = "User updated" });
+		return Ok(new { message = "Form updated" });
 	}
 
 	[HttpDelete("{id}")]
@@ -70,7 +68,7 @@ public class FormsController : ControllerBase
 	{
 		await ValidateUserAccess(id);
 		await formService.Delete(id);
-		return Ok(new { message = "User deleted" });
+		return Ok(new { message = "Form deleted" });
 	}
 
 	private async Task ValidateUserAccess(Guid formId)
