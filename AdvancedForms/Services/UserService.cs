@@ -10,7 +10,7 @@ namespace AdvancedForms.Services;
 
 public interface IUserService
 {
-	Task<string> Authenticate(string mail, TimeSpan duration);
+	Task<string> Authenticate(string mail);
 	Task<Guid?> ParseToken(string token);
 	Task<User?> Get(Guid userId);
 }
@@ -20,17 +20,17 @@ public class UserService : IUserService
 	private readonly ILogger<UserService> logger;
 	private readonly FormContext db;
 	private readonly INowResolver nowResolver;
-	private readonly AppSettings appSettings;
+	private readonly JwtConfig jwtConfig;
 
-	public UserService(ILogger<UserService> logger, FormContext db, INowResolver nowResolver, IOptions<AppSettings> appSettings)
+	public UserService(ILogger<UserService> logger, FormContext db, INowResolver nowResolver, IOptions<JwtConfig> jwtConfig)
 	{
 		this.db = db;
 		this.logger = logger;
 		this.nowResolver = nowResolver;
-		this.appSettings = appSettings.Value;
+		this.jwtConfig = jwtConfig.Value;
 	}
 
-	public async Task<string> Authenticate(string mail, TimeSpan duration)
+	public async Task<string> Authenticate(string mail)
 	{
 		var user = db.Users.SingleOrDefault(u => u.Mail == mail);
 
@@ -50,6 +50,7 @@ public class UserService : IUserService
 		}
 
 		// authentication successful so generate jwt token
+		TimeSpan duration = TimeSpan.FromDays(jwtConfig.ExpireDays);
 		return GenerateJwtToken(user, duration);
 	}
 
@@ -60,7 +61,7 @@ public class UserService : IUserService
 			logger.LogInformation("Parsing token");
 
 			var tokenHandler = new JwtSecurityTokenHandler();
-			var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+			var key = Encoding.ASCII.GetBytes(jwtConfig.Secret);
 			tokenHandler.ValidateToken(token, new TokenValidationParameters
 			{
 				ValidateIssuerSigningKey = true,
@@ -92,7 +93,7 @@ public class UserService : IUserService
 	{
 		// generate token that is valid for 7 days
 		var tokenHandler = new JwtSecurityTokenHandler();
-		var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+		var key = Encoding.ASCII.GetBytes(jwtConfig.Secret);
 		var tokenDescriptor = new SecurityTokenDescriptor
 		{
 			Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),

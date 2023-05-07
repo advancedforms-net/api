@@ -1,6 +1,7 @@
 namespace AdvancedForms.Models;
 
-public class AppSettings
+public class JwtConfig
 {
+	public int ExpireDays { get; set; } = 3;
 	public string Secret { get; set; } = default!;
 }

@@ -20,7 +20,8 @@ var providerType = DbProviderType();
 	services.AddDbContext<FormContext>(options => DbOptionsBuilder(options));
 
 	// configure strongly typed settings object
-	services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+	services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
+	services.Configure<MailConfig>(builder.Configuration.GetSection("Mail"));
 
 	// configure DI for application services
 	services.AddScoped<IUserService, UserService>();

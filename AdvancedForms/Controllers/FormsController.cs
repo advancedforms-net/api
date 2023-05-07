@@ -1,4 +1,5 @@
 using AdvancedForms.Helpers;
+using AdvancedForms.Models;
 using AdvancedForms.Services;
 using AdvancedForms.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -34,33 +35,30 @@ public class FormsController : ControllerBase
 	*/
 
 	[HttpGet]
-	public async Task<IActionResult> GetAll()
+	public async Task<IEnumerable<Form>> GetAll()
 	{
-		var forms = await formService.GetAll();
-		return Ok(forms);
+		return await formService.GetAll();
 	}
 
 	[HttpGet("{id}")]
-	public async Task<IActionResult> GetById(Guid id)
+	public async Task<Form> GetById(Guid id)
 	{
 		await ValidateUserAccess(id);
-		var form = await formService.Get(id);
-		return Ok(form);
+		return await formService.Get(id);
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Create(FormCreate model)
+	public async Task<Form> Create(FormCreate model)
 	{
-		await formService.Create(model, userId);
-		return Ok(new { message = "Form created" });
+		return await formService.Create(model, userId);
 	}
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> Update(Guid id, FormUpdate model)
+	public async Task<Form> Update(Guid id, FormUpdate model)
 	{
 		await ValidateUserAccess(id);
 		await formService.Update(id, model);
-		return Ok(new { message = "Form updated" });
+		return await formService.Get(id);
 	}
 
 	[HttpDelete("{id}")]

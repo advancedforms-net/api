@@ -8,7 +8,7 @@ public interface IFormService
 {
 	Task<IEnumerable<Form>> GetAll();
 	Task<Form> Get(Guid formId);
-	Task Create(FormCreate model, Guid userId);
+	Task<Form> Create(FormCreate model, Guid userId);
 	Task Update(Guid formId, FormUpdate model);
 	Task Delete(Guid formId);
 }
@@ -40,7 +40,7 @@ public class FormService : IFormService
 		return form;
 	}
 
-	public async Task Create(FormCreate model, Guid userId)
+	public async Task<Form> Create(FormCreate model, Guid userId)
 	{
 		// validate
 		//if (_context.Users.Any(x => x.Email == model.Email))
@@ -54,6 +54,8 @@ public class FormService : IFormService
 		// save form
 		db.Forms.Add(form);
 		await db.SaveChangesAsync();
+
+		return form;
 	}
 
 	public async Task Update(Guid formId, FormUpdate model)

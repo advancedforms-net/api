@@ -1,18 +1,14 @@
-using AdvancedForms.Models;
 using AdvancedForms.Services;
-using Microsoft.Extensions.Options;
 
 namespace AdvancedForms.Helpers;
 
 public class JwtMiddleware
 {
-	private readonly RequestDelegate _next;
-	private readonly AppSettings _appSettings;
+	private readonly RequestDelegate next;
 
-	public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
+	public JwtMiddleware(RequestDelegate next)
 	{
-		_next = next;
-		_appSettings = appSettings.Value;
+		this.next = next;
 	}
 
 	public async Task Invoke(HttpContext context, IUserService userService)
@@ -25,6 +21,6 @@ public class JwtMiddleware
 			context.Items["UserId"] = await userService.ParseToken(token);
 		}
 
-		await _next(context);
+		await next(context);
 	}
 }
