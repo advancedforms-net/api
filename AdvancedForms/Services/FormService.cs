@@ -1,12 +1,13 @@
 using AdvancedForms.Helpers;
 using AdvancedForms.Models;
 using AdvancedForms.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdvancedForms.Services;
 
 public interface IFormService
 {
-	Task<IEnumerable<Form>> GetAll();
+	Task<IEnumerable<Form>> GetAll(Guid? userId = null);
 	Task<Form> Get(Guid formId);
 	Task<Form> Create(FormCreate model, Guid userId);
 	Task Update(Guid formId, FormUpdate model);
@@ -24,9 +25,9 @@ public class FormService : IFormService
 		this.db = db;
 		this.logger = logger;
 	}
-	public Task<IEnumerable<Form>> GetAll()
+	public async Task<IEnumerable<Form>> GetAll(Guid? userId)
 	{
-		return Task.FromResult<IEnumerable<Form>>(db.Forms);
+		return await db.Forms.Where(f => !userId.HasValue || f.UserId == userId).ToListAsync();
 	}
 
 	public async Task<Form> Get(Guid formId)

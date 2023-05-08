@@ -37,7 +37,7 @@ public class FormsController : ControllerBase
 	[HttpGet]
 	public async Task<IEnumerable<Form>> GetAll()
 	{
-		return await formService.GetAll();
+		return await formService.GetAll(userId);
 	}
 
 	[HttpGet("{id}")]

@@ -96,7 +96,10 @@ public class UserService : IUserService
 		var key = Encoding.ASCII.GetBytes(jwtConfig.Secret);
 		var tokenDescriptor = new SecurityTokenDescriptor
 		{
-			Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+			Subject = new ClaimsIdentity(new[] {
+				new Claim("id", user.Id.ToString()),
+				new Claim("mail", user.Mail),
+			}),
 			Expires = nowResolver.GetUtcNow().Add(duration),
 			SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
 		};
