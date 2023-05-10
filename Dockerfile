@@ -7,6 +7,8 @@ EXPOSE 443
 
 RUN apt-get update \
     && apt-get install -y curl
+    
+HEALTHCHECK --interval=30s --timeout=10s CMD curl -f http://localhost:80/healthz
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
