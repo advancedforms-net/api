@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 namespace AdvancedForms.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class UsersController : ControllerBase
 {
 	private readonly IUserService userService;

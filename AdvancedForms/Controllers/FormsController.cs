@@ -8,7 +8,7 @@ namespace AdvancedForms.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class FormsController : ControllerBase
 {
 	private readonly ILogger<FormsController> logger;

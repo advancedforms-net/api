@@ -15,6 +15,7 @@ var providerType = DbProviderType();
 {
 	var services = builder.Services;
 
+	services.AddHealthChecks();
 	services.AddHttpContextAccessor();
 
 	services.AddTransient<INowResolver, NowResolver>();
@@ -60,6 +61,8 @@ var providerType = DbProviderType();
 }
 
 var app = builder.Build();
+
+app.MapHealthChecks("/healthz");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

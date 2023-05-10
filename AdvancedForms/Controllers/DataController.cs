@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AdvancedForms.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class DataController : ControllerBase
 {
 	private readonly ILogger<DataController> logger;
