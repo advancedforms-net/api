@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdvancedForms.Migrations.Npgsql
 {
     [DbContext(typeof(NpgsqlFormContext))]
-    [Migration("20230412152208_AddedUser")]
-    partial class AddedUser
+    [Migration("20230530125030_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,6 +67,10 @@ namespace AdvancedForms.Migrations.Npgsql
                     b.Property<Guid?>("TemplateId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ValuesJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FormId");
@@ -86,57 +90,18 @@ namespace AdvancedForms.Migrations.Npgsql
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("PresetTemplate");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.PresetTemplateValue", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("FormId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("TemplateId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Value")
+                    b.Property<string>("ValuesJson")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TemplateId");
+                    b.HasIndex("FormId");
 
-                    b.ToTable("PresetTemplateValue");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.PresetValue", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("PresetId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PresetId");
-
-                    b.ToTable("PresetValue");
+                    b.ToTable("PresetTemplates");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.Response", b =>
@@ -148,43 +113,18 @@ namespace AdvancedForms.Migrations.Npgsql
                     b.Property<DateTime>("Creation")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("FormId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("PresetId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.Property<string>("ValuesJson")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.HasIndex("FormId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PresetId");
 
                     b.ToTable("Responses");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.ResponseValue", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("ResponseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ResponseId");
-
-                    b.ToTable("ResponseValue");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.User", b =>
@@ -220,7 +160,7 @@ namespace AdvancedForms.Migrations.Npgsql
                         .IsRequired();
 
                     b.HasOne("AdvancedForms.Models.PresetTemplate", "Template")
-                        .WithMany()
+                        .WithMany("Presets")
                         .HasForeignKey("TemplateId");
 
                     b.Navigation("Form");
@@ -228,34 +168,19 @@ namespace AdvancedForms.Migrations.Npgsql
                     b.Navigation("Template");
                 });
 
-            modelBuilder.Entity("AdvancedForms.Models.PresetTemplateValue", b =>
+            modelBuilder.Entity("AdvancedForms.Models.PresetTemplate", b =>
                 {
-                    b.HasOne("AdvancedForms.Models.PresetTemplate", "Template")
-                        .WithMany("Values")
-                        .HasForeignKey("TemplateId")
+                    b.HasOne("AdvancedForms.Models.Form", "Form")
+                        .WithMany("PresetTemplates")
+                        .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Template");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.PresetValue", b =>
-                {
-                    b.HasOne("AdvancedForms.Models.Preset", "Preset")
-                        .WithMany("Values")
-                        .HasForeignKey("PresetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Preset");
+                    b.Navigation("Form");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.Response", b =>
                 {
-                    b.HasOne("AdvancedForms.Models.Form", null)
-                        .WithMany("Responses")
-                        .HasForeignKey("FormId");
-
                     b.HasOne("AdvancedForms.Models.Preset", "Preset")
                         .WithMany("Responses")
                         .HasForeignKey("PresetId")
@@ -265,39 +190,21 @@ namespace AdvancedForms.Migrations.Npgsql
                     b.Navigation("Preset");
                 });
 
-            modelBuilder.Entity("AdvancedForms.Models.ResponseValue", b =>
-                {
-                    b.HasOne("AdvancedForms.Models.Response", "Response")
-                        .WithMany("Values")
-                        .HasForeignKey("ResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Response");
-                });
-
             modelBuilder.Entity("AdvancedForms.Models.Form", b =>
                 {
-                    b.Navigation("Presets");
+                    b.Navigation("PresetTemplates");
 
-                    b.Navigation("Responses");
+                    b.Navigation("Presets");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.Preset", b =>
                 {
                     b.Navigation("Responses");
-
-                    b.Navigation("Values");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.PresetTemplate", b =>
                 {
-                    b.Navigation("Values");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.Response", b =>
-                {
-                    b.Navigation("Values");
+                    b.Navigation("Presets");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.User", b =>

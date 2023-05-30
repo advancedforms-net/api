@@ -7,6 +7,7 @@ public class FormContext : DbContext
 	public DbSet<User> Users => Set<User>();
 	public DbSet<Form> Forms => Set<Form>();
 	public DbSet<Preset> Presets => Set<Preset>();
+	public DbSet<PresetTemplate> PresetTemplates => Set<PresetTemplate>();
 	public DbSet<Response> Responses => Set<Response>();
 
 	public FormContext() { }

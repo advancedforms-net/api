@@ -3,7 +3,6 @@ using AdvancedForms.Services;
 using AdvancedForms.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,10 +35,7 @@ var providerType = DbProviderType();
 		_ => throw new Exception($"Unsupported provider: {provider}"),
 	};
 
-	services.AddControllers().AddJsonOptions(options =>
-	{
-		options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-	});
+	services.AddControllers();
 
 	// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 	services.AddEndpointsApiExplorer();

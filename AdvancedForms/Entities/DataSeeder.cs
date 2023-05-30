@@ -9,7 +9,18 @@ public class DataSeeder
 	public static void Init(int count)
 	{
 		var presetFaker = new Faker<Preset>()
-			.RuleFor(p => p.Id, f => f.Random.Guid());
+			.RuleFor(p => p.Id, f => f.Random.Guid())
+			.RuleFor(p => p.Values, f => 
+			{
+				int count = f.Random.Number(3, 5);
+				Dictionary<string, string> values = new();
+				for (int i = 0; i < count; ++i)
+				{
+					values[f.Hacker.Verb()] = f.Hacker.Phrase();
+				}
+
+				return values;
+			});
 
 		var formFaker = new Faker<Form>()
 		.RuleFor(f => f.Id, f => f.Random.Guid())

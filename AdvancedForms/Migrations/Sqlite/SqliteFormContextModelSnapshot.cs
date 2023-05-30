@@ -59,6 +59,10 @@ namespace AdvancedForms.Migrations.Sqlite
                     b.Property<Guid?>("TemplateId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ValuesJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FormId");
@@ -78,57 +82,18 @@ namespace AdvancedForms.Migrations.Sqlite
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("PresetTemplate");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.PresetTemplateValue", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("FormId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("TemplateId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
+                    b.Property<string>("ValuesJson")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TemplateId");
+                    b.HasIndex("FormId");
 
-                    b.ToTable("PresetTemplateValue");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.PresetValue", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("PresetId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PresetId");
-
-                    b.ToTable("PresetValue");
+                    b.ToTable("PresetTemplates");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.Response", b =>
@@ -140,43 +105,18 @@ namespace AdvancedForms.Migrations.Sqlite
                     b.Property<DateTime>("Creation")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("FormId")
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("PresetId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.Property<string>("ValuesJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("FormId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PresetId");
 
                     b.ToTable("Responses");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.ResponseValue", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("ResponseId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ResponseId");
-
-                    b.ToTable("ResponseValue");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.User", b =>
@@ -212,7 +152,7 @@ namespace AdvancedForms.Migrations.Sqlite
                         .IsRequired();
 
                     b.HasOne("AdvancedForms.Models.PresetTemplate", "Template")
-                        .WithMany()
+                        .WithMany("Presets")
                         .HasForeignKey("TemplateId");
 
                     b.Navigation("Form");
@@ -220,34 +160,19 @@ namespace AdvancedForms.Migrations.Sqlite
                     b.Navigation("Template");
                 });
 
-            modelBuilder.Entity("AdvancedForms.Models.PresetTemplateValue", b =>
+            modelBuilder.Entity("AdvancedForms.Models.PresetTemplate", b =>
                 {
-                    b.HasOne("AdvancedForms.Models.PresetTemplate", "Template")
-                        .WithMany("Values")
-                        .HasForeignKey("TemplateId")
+                    b.HasOne("AdvancedForms.Models.Form", "Form")
+                        .WithMany("PresetTemplates")
+                        .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Template");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.PresetValue", b =>
-                {
-                    b.HasOne("AdvancedForms.Models.Preset", "Preset")
-                        .WithMany("Values")
-                        .HasForeignKey("PresetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Preset");
+                    b.Navigation("Form");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.Response", b =>
                 {
-                    b.HasOne("AdvancedForms.Models.Form", null)
-                        .WithMany("Responses")
-                        .HasForeignKey("FormId");
-
                     b.HasOne("AdvancedForms.Models.Preset", "Preset")
                         .WithMany("Responses")
                         .HasForeignKey("PresetId")
@@ -257,39 +182,21 @@ namespace AdvancedForms.Migrations.Sqlite
                     b.Navigation("Preset");
                 });
 
-            modelBuilder.Entity("AdvancedForms.Models.ResponseValue", b =>
-                {
-                    b.HasOne("AdvancedForms.Models.Response", "Response")
-                        .WithMany("Values")
-                        .HasForeignKey("ResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Response");
-                });
-
             modelBuilder.Entity("AdvancedForms.Models.Form", b =>
                 {
-                    b.Navigation("Presets");
+                    b.Navigation("PresetTemplates");
 
-                    b.Navigation("Responses");
+                    b.Navigation("Presets");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.Preset", b =>
                 {
                     b.Navigation("Responses");
-
-                    b.Navigation("Values");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.PresetTemplate", b =>
                 {
-                    b.Navigation("Values");
-                });
-
-            modelBuilder.Entity("AdvancedForms.Models.Response", b =>
-                {
-                    b.Navigation("Values");
+                    b.Navigation("Presets");
                 });
 
             modelBuilder.Entity("AdvancedForms.Models.User", b =>

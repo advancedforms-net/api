@@ -12,5 +12,5 @@ public class Form
 
 	public virtual List<Preset> Presets { get; set; } = new();
 
-	public virtual List<Response> Responses { get; set; } = new();
+	public virtual List<PresetTemplate> PresetTemplates { get; set; } = new();
 }

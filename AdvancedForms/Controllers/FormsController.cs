@@ -32,10 +32,12 @@ public class FormsController : ControllerBase
 	form preset with code CRUD
 	- responses are displayed on preset
 	- export data
+	- import with code gen
+	    desc;template
 	*/
 
 	[HttpGet]
-	public async Task<IEnumerable<Form>> GetAll()
+	public async Task<IEnumerable<FormBasic>> GetAll()
 	{
 		return await formService.GetAll(userId);
 	}
@@ -48,7 +50,7 @@ public class FormsController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<Form> Create(FormCreate model)
+	public async Task<FormBasic> Create(FormCreate model)
 	{
 		return await formService.Create(model, userId);
 	}

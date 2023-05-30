@@ -34,8 +34,8 @@ public class DataControllerTest
 			Description = "Codes template",
 			Values = new()
 			{
-				new() { Key = "test-include", Value = "test value template" },
-				new() { Key = "test-override", Value = "override value template" },
+				{ "test-include", "test value template" },
+				{ "test-override", "override value template" },
 			}
 		};
 
@@ -55,14 +55,14 @@ public class DataControllerTest
 						Id = new Guid("7a9186d8-69c0-4918-a072-e693ba6199be"),
 						Values = new ()
 						{
-							new() { Key = "test-exlude", Value = "test value preset" },
+							{ "test-preset-value", "test value preset" },
 						},
 						Template = new()
 						{
 							Description = "No codes template",
 							Values= new ()
 							{
-								new() { Key = "test-include", Value = "test value template" },
+								{ "test-template-value", "test value template" },
 							}
 						}
 					},
@@ -82,7 +82,7 @@ public class DataControllerTest
 						Code = "test1",
 						Values = new ()
 						{
-							new() { Id = Guid.NewGuid(), Key = "test", Value = "test value 1" },
+							{ "test", "test value 1" },
 						},
 						Template = template,
 					},
@@ -92,8 +92,8 @@ public class DataControllerTest
 						Code = "test2",
 						Values = new ()
 						{
-							new() { Id = Guid.NewGuid(), Key = "test", Value = "test value 2" },
-							new() { Id = Guid.NewGuid(), Key = "test-override", Value = "value overriden" },
+							{ "test", "test value 2" },
+							{ "test-override", "value overriden" },
 						},
 						Template = template,
 					},
@@ -119,8 +119,8 @@ public class DataControllerTest
 		var result = await controller.GetData(new Guid("b1fa714f-fbba-44d1-8de8-171e4614e881"), null);
 		var data1 = result.GetObjectResult();
 
-		Assert.That(data1?.StaticData, Does.Not.ContainKey("test-exlude"));
-		Assert.That(data1?.StaticData, Does.ContainKey("test-include"));
+		Assert.That(data1?.StaticData, Does.ContainKey("test-preset-value"));
+		Assert.That(data1?.StaticData, Does.ContainKey("test-template-value"));
 
 		result = await controller.GetData(new Guid("b1fa714f-fbba-44d1-8de8-171e4614e881"), "Hello");
 		var data2 = result.GetObjectResult();

@@ -7,9 +7,9 @@ namespace AdvancedForms.Services;
 
 public interface IFormService
 {
-	Task<IEnumerable<Form>> GetAll(Guid? userId = null);
+	Task<IEnumerable<FormBasic>> GetAll(Guid? userId = null);
 	Task<Form> Get(Guid formId);
-	Task<Form> Create(FormCreate model, Guid userId);
+	Task<FormBasic> Create(FormCreate model, Guid userId);
 	Task Update(Guid formId, FormUpdate model);
 	Task Delete(Guid formId);
 }
@@ -25,9 +25,10 @@ public class FormService : IFormService
 		this.db = db;
 		this.logger = logger;
 	}
-	public async Task<IEnumerable<Form>> GetAll(Guid? userId)
+	public async Task<IEnumerable<FormBasic>> GetAll(Guid? userId)
 	{
-		return await db.Forms.Where(f => !userId.HasValue || f.UserId == userId).ToListAsync();
+		var forms = await db.Forms.Where(f => !userId.HasValue || f.UserId == userId).ToListAsync();
+		return forms.Select(f => mapper.FormToFormBasic(f));
 	}
 
 	public async Task<Form> Get(Guid formId)
@@ -41,7 +42,7 @@ public class FormService : IFormService
 		return form;
 	}
 
-	public async Task<Form> Create(FormCreate model, Guid userId)
+	public async Task<FormBasic> Create(FormCreate model, Guid userId)
 	{
 		// validate
 		//if (_context.Users.Any(x => x.Email == model.Email))
@@ -56,7 +57,7 @@ public class FormService : IFormService
 		db.Forms.Add(form);
 		await db.SaveChangesAsync();
 
-		return form;
+		return mapper.FormToFormBasic(form);
 	}
 
 	public async Task Update(Guid formId, FormUpdate model)

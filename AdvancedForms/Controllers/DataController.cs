@@ -35,20 +35,26 @@ public class DataController : ControllerBase
 		// get data from preset template
 		if (preset.Template != null)
 		{
-			data.StaticData = preset.Template.Values.ToDictionary(v => v.Key, v => v.Value);
+			foreach (var v in preset.Template.Values)
+			{
+				data.StaticData[v.Key] = v.Value;
+			}
+		}
+
+		// get data from preset itself (only really relevant when using a personel code)
+		foreach (var v in preset.Values)
+		{
+			data.StaticData[v.Key] = v.Value;
 		}
 
 		// get already posted data (response data => personal code)
 		if (preset.Form.UseCodes)
 		{
-			// get data from preset itself (only really relevant when using a personel code)
-			preset.Values.ForEach(v => data.StaticData[v.Key] = v.Value);
-
 			// get reponse data when codes are used
 			var lastResponse = preset.Responses.OrderBy(r => r.Creation).FirstOrDefault();
 			if (lastResponse != null)
 			{
-				data.ResponseData = lastResponse.Values.ToDictionary(v => v.Key, v => v.Value);
+				data.ResponseData = lastResponse.Values;
 			}
 		}
 
@@ -70,10 +76,10 @@ public class DataController : ControllerBase
 		}
 
 		// actually add data to db
-		preset.Responses.Add(new Models.Response()
+		preset.Responses.Add(new Response()
 		{
 			Creation = nowResolver.GetNow(),
-			Values = data.Select(v => new ResponseValue() { Key = v.Key, Value = v.Value }).ToList(),
+			Values = data,
 		});
 
 		await db.SaveChangesAsync();
