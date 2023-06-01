@@ -53,6 +53,10 @@ namespace AdvancedForms.Migrations.Sqlite
                     b.Property<string>("Code")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("FormId")
                         .HasColumnType("TEXT");
 

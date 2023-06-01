@@ -9,44 +9,17 @@ namespace AdvancedForms.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class FormsController : ControllerBase
+public class FormsController : BaseCrudeController<Form, FormCreate, FormUpdate>
 {
-	private readonly ILogger<FormsController> logger;
-	private readonly IFormService formService;
-	private readonly Guid userId;
-
-	public FormsController(ILogger<FormsController> logger, IFormService formService, IHttpContextAccessor httpContextAccessor)
+	public FormsController(ILogger<FormsController> logger, IFormService formService, IHttpContextAccessor httpContextAccessor):
+		base(formService, formService, httpContextAccessor)
 	{
-		this.logger = logger;
-		this.formService = formService;
-
-		var userId = httpContextAccessor.HttpContext?.Items["UserId"] as Guid?;
-		ArgumentNullException.ThrowIfNull(userId); // this should never happen because of the authorize attribute
-		this.userId = userId.Value;
 	}
-
-	/* endpoints
-	form CRUD
-	- export data
-	form template CRUD
-	form preset with code CRUD
-	- responses are displayed on preset
-	- export data
-	- import with code gen
-	    desc;template
-	*/
 
 	[HttpGet]
 	public async Task<IEnumerable<FormBasic>> GetAll()
 	{
 		return await formService.GetAll(userId);
-	}
-
-	[HttpGet("{id}")]
-	public async Task<Form> GetById(Guid id)
-	{
-		await ValidateUserAccess(id);
-		return await formService.Get(id);
 	}
 
 	[HttpPost]
@@ -55,29 +28,12 @@ public class FormsController : ControllerBase
 		return await formService.Create(model, userId);
 	}
 
-	[HttpPut("{id}")]
-	public async Task<Form> Update(Guid id, FormUpdate model)
+	protected override Task<Guid> GetFormId(Guid modelId)
 	{
-		await ValidateUserAccess(id);
-		await formService.Update(id, model);
-		return await formService.Get(id);
+		return Task.FromResult(modelId);
 	}
 
-	[HttpDelete("{id}")]
-	public async Task<IActionResult> Delete(Guid id)
-	{
-		await ValidateUserAccess(id);
-		await formService.Delete(id);
-		return Ok(new { message = "Form deleted" });
-	}
-
-	private async Task ValidateUserAccess(Guid formId)
-	{
-		var form = await formService.Get(formId);
-
-		if(form.UserId != userId)
-		{
-			throw new UnauthorizedException("Form not accessable by user.");
-		}
-	}
+	//TODO form export data
+	//TODO preset import for codes
+	// import csv witch desc and template link and generate a code preset for each
 }

@@ -70,6 +70,7 @@ namespace AdvancedForms.Migrations.Npgsql
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Code = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     FormId = table.Column<Guid>(type: "uuid", nullable: false),
                     TemplateId = table.Column<Guid>(type: "uuid", nullable: true),
                     ValuesJson = table.Column<string>(type: "text", nullable: false)

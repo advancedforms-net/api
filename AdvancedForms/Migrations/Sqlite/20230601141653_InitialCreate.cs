@@ -70,6 +70,7 @@ namespace AdvancedForms.Migrations.Sqlite
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Code = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
                     FormId = table.Column<Guid>(type: "TEXT", nullable: false),
                     TemplateId = table.Column<Guid>(type: "TEXT", nullable: true),
                     ValuesJson = table.Column<string>(type: "TEXT", nullable: false)

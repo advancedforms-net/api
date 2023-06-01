@@ -58,6 +58,10 @@ namespace AdvancedForms.Migrations.Npgsql
                     b.Property<string>("Code")
                         .HasColumnType("text");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid>("FormId")
                         .HasColumnType("uuid");
 

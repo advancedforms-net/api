@@ -27,6 +27,8 @@ var providerType = DbProviderType();
 	// configure DI for application services
 	services.AddScoped<IUserService, UserService>();
 	services.AddScoped<IFormService, FormService>();
+	services.AddScoped<ITemplateService, TemplateService>();
+	services.AddScoped<IPresetService, PresetService>();
 
 	_ = provider switch
 	{
