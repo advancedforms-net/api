@@ -9,11 +9,11 @@ namespace AdvancedForms.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class PresetController : BaseCrudeController<Preset, PresetCreate, PresetUpdate>
+public class PresetsController : BaseCrudeController<Preset, PresetCreate, PresetUpdate>
 {
 	private readonly IPresetService presetService;
 
-	public PresetController(IPresetService presetService, IFormService formService, IHttpContextAccessor httpContextAccessor):
+	public PresetsController(IPresetService presetService, IFormService formService, IHttpContextAccessor httpContextAccessor):
 		base(presetService, formService, httpContextAccessor)
 	{
 		this.presetService = presetService;
