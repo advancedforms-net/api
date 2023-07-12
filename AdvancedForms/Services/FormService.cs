@@ -16,6 +16,8 @@ public interface IFormService : IBaseCrudService<Form, FormCreate, FormUpdate>
 
 	[Obsolete("Form create should be done with userid", true)]
 	new Task<Form> Create(FormCreate view);
+
+	Task AddPresets(Guid formId, IEnumerable<Preset> presets);
 }
 
 public class FormService : BaseCrudService<Form, FormCreate, FormUpdate>, IFormService
@@ -51,6 +53,17 @@ public class FormService : BaseCrudService<Form, FormCreate, FormUpdate>, IFormS
 		await db.SaveChangesAsync();
 
 		return mapper.FormToFormBasic(form);
+	}
+
+	public async Task AddPresets(Guid formId, IEnumerable<Preset> presets)
+	{
+		foreach (var p in presets)
+		{
+			p.FormId = formId;
+			db.Presets.Add(p);
+		}
+
+		await db.SaveChangesAsync();
 	}
 
 	public async Task ValidateUserAccess(Guid formId, Guid userId)
