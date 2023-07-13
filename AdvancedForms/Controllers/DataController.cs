@@ -69,6 +69,16 @@ public class DataController : ControllerBase
 			return BadRequest("No data supplied.");
 		}
 
+		if (string.IsNullOrEmpty(personalCode))
+		{
+			// if the personalcode is not filled in the check the submitted data to see if it's was added there
+			data.TryGetValue(nameof(personalCode), out personalCode);
+			data.Remove(nameof(personalCode));
+		}
+
+		logger.LogInformation("Post data with code {personalCode}", personalCode);
+		logger.LogInformation("Data: {data}", System.Text.Json.JsonSerializer.Serialize(data));
+
 		var preset = await GetFormPreset(formId, personalCode);
 		if (preset == null)
 		{
@@ -76,21 +86,28 @@ public class DataController : ControllerBase
 		}
 
 		// actually add data to db
+		// we filter out all keys starting with _ as those are used by the system
+		var responseData = data.Where(it => !it.Key.StartsWith('_')).ToDictionary(it => it.Key, it => it.Value);
 		preset.Responses.Add(new Response()
 		{
 			Creation = nowResolver.GetNow(),
-			Values = data,
+			Values = responseData,
 		});
 
 		await db.SaveChangesAsync();
 
+		if (data.TryGetValue("_redirect", out var redirect) && !string.IsNullOrWhiteSpace(redirect))
+		{
+			return Redirect(redirect);
+		}
+
+		//TODO add simple success UI
 		return NoContent();
 	}
 
 	[NonAction]
 	public async Task<Preset?> GetFormPreset(Guid formId, string? personalCode)
 	{
-
 		// check if the form is valid and if the form uses personal codes or not
 		var form = await db.Forms.FindAsync(formId);
 		if (form == null)
