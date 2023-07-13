@@ -37,7 +37,11 @@ var providerType = DbProviderType();
 		_ => throw new Exception($"Unsupported provider: {provider}"),
 	};
 
-	services.AddControllers();
+	services.AddControllers(options =>
+	{
+		//TODO only apply on DataController
+		options.InputFormatters.Add(new FormInputFormatter());
+	});
 
 	// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 	services.AddEndpointsApiExplorer();
