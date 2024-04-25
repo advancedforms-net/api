@@ -22,13 +22,13 @@ public class UsersController : ControllerBase
 	}
 
 	[HttpPost("Authenticate")]
-	public async Task<ActionResult<string>> Authenticate(string mail)
+	public async Task<ActionResult<string>> Authenticate(string mail, string? body)
 	{
 		string token = await userService.Authenticate(mail);
 
 		//TODO mail the token
 		var subject = mailConfig.Subject ?? "AdvancedForms login";
-		var body = mailConfig.Body ?? "Login using following url: http://advancedforms.net/login?jwt={token}";
+		body ??= mailConfig.Body ?? "Login using token: {token}";
 		body = body.Replace("{token}", token);
 
 		using var client = new SmtpClient(mailConfig.Host, mailConfig.Port)
